@@ -14,7 +14,6 @@ function showToast(message = "Preferences saved!") {
   }, 3000);
 }
 
-
 document.getElementById("preferences-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -27,7 +26,6 @@ document.getElementById("preferences-form").addEventListener("submit", function 
   showUserPreferences(userPrefs);
 
   showToast("Preferences saved!");
-
 });
 
 function showUserPreferences(prefs) {
@@ -78,7 +76,6 @@ function checkWeather() {
     });
 }
 
-
 function generateFakeNotification(userPrefs, weatherData) {
   const { name, dislikes, preferredTemp } = userPrefs;
   const { description, temp } = weatherData;
@@ -96,56 +93,4 @@ function generateFakeNotification(userPrefs, weatherData) {
   }
 
   document.getElementById("weatherResult").innerHTML += `<p>${message}</p>`;
-}
-
-const indianCityWeather = [
-  { city: "Shimla", month: 6, temp: 20, description: "cool and pleasant" },
-  { city: "Goa", month: 1, temp: 27, description: "sunny and dry" },
-  { city: "Udaipur", month: 11, temp: 22, description: "mild and dry" },
-  { city: "Manali", month: 5, temp: 18, description: "cool mountain air" },
-  { city: "Kolkata", month: 12, temp: 24, description: "pleasant with festive vibes" },
-  { city: "Darjeeling", month: 4, temp: 16, description: "fresh and misty" },
-  { city: "Jaipur", month: 2, temp: 23, description: "warm and dry" }
-];
-
-function suggestLocation() {
-  const { dislikes, preferredTemp, month, name } = userPrefs;
-
-  if (!month || isNaN(preferredTemp)) {
-    displaySuggestion("❗ Please set your preferences and select a month.");
-    return;
-  }
-
-  let matches = indianCityWeather.filter(loc => {
-    const tempMatch = Math.abs(loc.temp - preferredTemp) <= 4;
-    const dislikeMatch = !dislikes.includes("rain") || !loc.description.includes("rain");
-    return loc.month === month && tempMatch && dislikeMatch;
-  });
-
-  if (matches.length === 0) {
-    matches = indianCityWeather.filter(loc => {
-      return loc.month === month && Math.abs(loc.temp - preferredTemp) <= 6;
-    });
-  }
-
-  if (matches.length === 0) {
-    matches = indianCityWeather.filter(loc => loc.month === month);
-  }
-
-  if (matches.length === 0) {
-    displaySuggestion("😓 No suitable match found this month. Try another month or relax preferences.");
-  } else {
-    const chosen = matches[Math.floor(Math.random() * matches.length)];
-    const message = `
-      Hi ${name || "traveler"}! Based on your preferences,
-      <strong>${chosen.city}</strong> is a great place to visit in that month. 🌍<br/>
-      It usually has <em>${chosen.description}</em> weather around ${chosen.temp}°C.
-    `;
-    displaySuggestion(message);
-  }
-}
-
-
-function displaySuggestion(message) {
-  document.getElementById("suggestionResult").innerHTML = message;
 }
